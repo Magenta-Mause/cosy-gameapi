@@ -1,14 +1,13 @@
-use std::{error::Error};
+use std::{error::Error, sync::Arc};
 
 use reqwest::header::{HeaderMap, HeaderValue};
 use steamgriddb_api::{search::SearchResult};
-use tokio::sync::Mutex;
 
 use crate::{steamgriddb_models};
 
 pub struct GlobalState {
-    steamgriddb_api_client: Mutex<steamgriddb_api::client::Client>,
-    reqwest_client: Mutex<reqwest::Client>
+    steamgriddb_api_client: Arc<steamgriddb_api::client::Client>,
+    reqwest_client: Arc<reqwest::Client>
 }
 
 impl GlobalState {
@@ -20,38 +19,33 @@ impl GlobalState {
         );
 
         let client = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(5))
             .default_headers(client_headers)
-            .build()
-            .unwrap();
+            .build()?;
 
         Ok(Self {
-            steamgriddb_api_client: Mutex::new(
+            steamgriddb_api_client: Arc::new(
                 steamgriddb_api::Client::new(auth_key)
             ),
-            reqwest_client: Mutex::new(
+            reqwest_client: Arc::new(
                 client
             )
         })
     }
 
     pub async fn search_api(&self, query: &str) -> Result<Vec<SearchResult>, Box<dyn Error>> {
-        let client = self.steamgriddb_api_client.lock().await;
-        client.search(query).await
+        self.steamgriddb_api_client.search(query).await
     }
 
     pub async fn fetch_assets_by_game_id(&self, game_id: usize) -> Result<Vec<steamgriddb_api::images::Image>, Box<dyn Error>> {
-        let client = self.steamgriddb_api_client.lock().await;
-        client.get_images_for_id(game_id, &steamgriddb_api::QueryType::Grid(None)).await
+        self.steamgriddb_api_client.get_images_for_id(game_id, &steamgriddb_api::QueryType::Grid(None)).await
     }
 
     pub async fn get_first_logo_by_game_id(&self, game_id: usize) -> Result<Option<String>, Box<dyn Error>> {
-        let client = self.reqwest_client.lock().await;
-        let sgdbc = self.steamgriddb_api_client.lock().await;
-
-        let base_url = sgdbc.base_url();
+        let base_url = self.steamgriddb_api_client.base_url();
         let logos_url = format!("{}/logos/game/{}", base_url, game_id);
 
-        let logos_resp = client.get(logos_url).query(&[
+        let logos_resp = self.reqwest_client.get(logos_url).query(&[
             ("limit", 1)
         ]).send().await?;
 
@@ -72,13 +66,10 @@ impl GlobalState {
     }
 
     pub async fn get_first_hero_by_game_id(&self, game_id: usize) -> Result<Option<String>, Box<dyn Error>> {
-        let client = self.reqwest_client.lock().await;
-        let sgdbc = self.steamgriddb_api_client.lock().await;
-
-        let base_url = sgdbc.base_url();
+        let base_url = self.steamgriddb_api_client.base_url();
         let heroes_url = format!("{}/heroes/game/{}", base_url, game_id);
 
-        let heroes_resp = client.get(heroes_url).query(&[
+        let heroes_resp = self.reqwest_client.get(heroes_url).query(&[
             ("limit", 1)
         ]).send().await?;
 

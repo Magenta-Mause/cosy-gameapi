@@ -3,10 +3,12 @@ use actix_web::{
     http::StatusCode,
     web::{Data, Query},
 };
+use futures::StreamExt;
 use serde::Deserialize;
 
 use crate::{
-    GlobalState, model::{Game, GameList, Response}
+    model::{Game, GameList, Response},
+    GlobalState,
 };
 
 #[derive(Deserialize)]
@@ -46,19 +48,26 @@ pub async fn search_games(
     let include_logo = query.include_logo.unwrap_or(false);
     let include_hero = query.include_hero.unwrap_or(false);
 
-    for game in &mut games {
-        if include_logo {
-            if let Ok(Some(url)) = global_data.get_first_logo_by_game_id(game.id).await {
-                game.logo_url = Some(url);
+    /* Parallelize logo/hero fetching */
+    futures::stream::iter(games.iter_mut())
+        .map(|game| {
+            let global = global_data.clone();
+            async move {
+                if include_logo {
+                    if let Ok(Some(url)) = global.get_first_logo_by_game_id(game.id).await {
+                        game.logo_url = Some(url);
+                    }
+                }
+                if include_hero {
+                    if let Ok(Some(url)) = global.get_first_hero_by_game_id(game.id).await {
+                        game.hero_url = Some(url);
+                    }
+                }
             }
-        }
-
-        if include_hero {
-            if let Ok(Some(url)) = global_data.get_first_hero_by_game_id(game.id).await {
-                game.hero_url = Some(url);
-            }
-        }
-    }
+        })
+        .buffer_unordered(8)
+        .for_each(|_| async {})
+        .await;
 
     Response::success(GameList { games, is_final })
 }
