@@ -36,12 +36,12 @@ impl GlobalState {
 
     pub async fn search_api(&self, query: &str) -> Result<Vec<SearchResult>, Box<dyn Error>> {
         let client = self.steamgriddb_api_client.lock().await;
-        Ok(client.search(query).await?)
+        client.search(query).await
     }
 
     pub async fn fetch_assets_by_game_id(&self, game_id: usize) -> Result<Vec<steamgriddb_api::images::Image>, Box<dyn Error>> {
         let client = self.steamgriddb_api_client.lock().await;
-        Ok(client.get_images_for_id(game_id, &steamgriddb_api::QueryType::Grid(None)).await?)
+        client.get_images_for_id(game_id, &steamgriddb_api::QueryType::Grid(None)).await
     }
 
     pub async fn get_first_logo_by_game_id(&self, game_id: usize) -> Result<Option<String>, Box<dyn Error>> {
@@ -60,7 +60,7 @@ impl GlobalState {
         }
 
         let logos_resp_json: steamgriddb_models::LogosResponse = serde_json::from_str(&logos_resp.text().await?)?;
-        if !logos_resp_json.success || logos_resp_json.data.len() == 0 {
+        if !logos_resp_json.success || logos_resp_json.data.is_empty() {
             return Err("No logo found".into());
         }
 
@@ -88,7 +88,7 @@ impl GlobalState {
 
         let heroes_resp_json: steamgriddb_models::HeroesResponse = serde_json::from_str(&heroes_resp.text().await?)?;
 
-        if !heroes_resp_json.success || heroes_resp_json.data.len() == 0 {
+        if !heroes_resp_json.success || heroes_resp_json.data.is_empty() {
             return Err("No logo found".into());
         }
 

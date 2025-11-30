@@ -15,7 +15,7 @@ pub struct Game {
 impl From<steamgriddb_api::search::SearchResult> for Game {
     fn from(result: steamgriddb_api::search::SearchResult) -> Self {
         Game {
-            id: result.id as usize,
+            id: result.id,
             name: result.name,
             logo_url: None,
             hero_url: None,
