@@ -54,13 +54,16 @@ impl GlobalState {
         }
 
         let logos_resp_json: steamgriddb_models::LogosResponse = serde_json::from_str(&logos_resp.text().await?)?;
-        if !logos_resp_json.success || logos_resp_json.data.is_empty() {
-            return Err("No logo found".into());
+
+        if !logos_resp_json.success {
+            return Err("steamgriddb API returned success=false for logos".into());
         }
 
-        let Some(first) = logos_resp_json.data.first() else {
+        if logos_resp_json.data.is_empty() {
             return Ok(None);
-        };
+        }
+
+        let first = logos_resp_json.data.first().expect("checked non-empty above");
 
         Ok(Some(first.url.to_owned()))
     }
@@ -74,18 +77,20 @@ impl GlobalState {
         ]).send().await?;
 
         if !heroes_resp.status().is_success() {
-            return Err("Failed to fetch logo".into());
+            return Err("Failed to fetch heroes".into());
         }
 
         let heroes_resp_json: steamgriddb_models::HeroesResponse = serde_json::from_str(&heroes_resp.text().await?)?;
 
-        if !heroes_resp_json.success || heroes_resp_json.data.is_empty() {
-            return Err("No logo found".into());
+        if !heroes_resp_json.success {
+            return Err("steamgriddb API returned success=false for heroes".into());
         }
 
-        let Some(first) = heroes_resp_json.data.first() else {
+        if heroes_resp_json.data.is_empty() {
             return Ok(None);
-        };
+        }
+
+        let first = heroes_resp_json.data.first().expect("checked non-empty above");
 
         Ok(Some(first.url.to_owned()))
     }
