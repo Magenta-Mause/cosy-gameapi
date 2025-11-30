@@ -1,0 +1,13 @@
+version: "3.9"
+name: cosy-gameapi
+services:
+  cosy-gameapi:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    environment:
+      COSY_GAMEAPI_SGDB_API_KEY: ${COSY_GAMEAPI_SGDB_API_KEY}
+    container_name: cosy-gameapi
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
