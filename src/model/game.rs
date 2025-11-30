@@ -26,6 +26,5 @@ impl From<steamgriddb_api::search::SearchResult> for Game {
 #[derive(Serialize, Clone)]
 pub struct GameList {
     pub games: Vec<Game>,
-    pub is_final: bool
+    pub is_final: bool,
 }
-

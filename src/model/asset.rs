@@ -20,5 +20,5 @@ impl From<steamgriddb_api::images::Image> for Asset {
 #[derive(Serialize, Clone)]
 pub struct AssetList {
     pub assets: Vec<Asset>,
-    pub is_final: bool
+    pub is_final: bool,
 }

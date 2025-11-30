@@ -83,9 +83,24 @@ mod tests {
     #[tokio::test]
     async fn parallel_fetch_sets_logo() {
         let mut games = [
-            Game { id: 1, name: "a".into(), logo_url: None, hero_url: None },
-            Game { id: 2, name: "b".into(), logo_url: None, hero_url: None },
-            Game { id: 3, name: "c".into(), logo_url: None, hero_url: None },
+            Game {
+                id: 1,
+                name: "a".into(),
+                logo_url: None,
+                hero_url: None,
+            },
+            Game {
+                id: 2,
+                name: "b".into(),
+                logo_url: None,
+                hero_url: None,
+            },
+            Game {
+                id: 3,
+                name: "c".into(),
+                logo_url: None,
+                hero_url: None,
+            },
         ];
 
         let include_logo = true;
@@ -116,8 +131,18 @@ mod tests {
     #[tokio::test]
     async fn parallel_fetch_sets_logo_and_hero() {
         let mut games = [
-            Game { id: 10, name: "x".into(), logo_url: None, hero_url: None },
-            Game { id: 11, name: "y".into(), logo_url: None, hero_url: None },
+            Game {
+                id: 10,
+                name: "x".into(),
+                logo_url: None,
+                hero_url: None,
+            },
+            Game {
+                id: 11,
+                name: "y".into(),
+                logo_url: None,
+                hero_url: None,
+            },
         ];
 
         let include_logo = true;

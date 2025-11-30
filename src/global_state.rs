@@ -1,7 +1,7 @@
 use std::{error::Error, sync::Arc};
 
 use reqwest::header::{HeaderMap, HeaderValue};
-use steamgriddb_api::{search::SearchResult};
+use steamgriddb_api::search::SearchResult;
 
 use crate::services::steamgriddb_service::SteamgriddbService;
 
@@ -14,9 +14,11 @@ pub struct GlobalState {
 impl GlobalState {
     pub fn new(auth_key: &str) -> Result<Self, Box<dyn Error>> {
         let mut client_headers: HeaderMap<HeaderValue> = reqwest::header::HeaderMap::default();
-        client_headers.insert("Authorization", format!("Bearer {}", auth_key)
-            .parse()
-            .map_err(|e| format!("Failed to parse auth header: {}", e))?
+        client_headers.insert(
+            "Authorization",
+            format!("Bearer {}", auth_key)
+                .parse()
+                .map_err(|e| format!("Failed to parse auth header: {}", e))?,
         );
 
         let client = reqwest::Client::builder()

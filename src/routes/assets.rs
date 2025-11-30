@@ -1,6 +1,13 @@
-use actix_web::{get, http::StatusCode, web::{self, Data, Query}};
+use actix_web::{
+    get,
+    http::StatusCode,
+    web::{self, Data, Query},
+};
 
-use crate::{GlobalState, model::{AssetList, Response}};
+use crate::{
+    model::{AssetList, Response},
+    GlobalState,
+};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -10,7 +17,11 @@ pub struct FetchAssetsQuery {
 }
 
 #[get("/assets/{game_id}")]
-pub async fn get_assets_by_id(global_data: Data<GlobalState>, path: web::Path<usize>, query: Query<FetchAssetsQuery>) -> Response<AssetList> {
+pub async fn get_assets_by_id(
+    global_data: Data<GlobalState>,
+    path: web::Path<usize>,
+    query: Query<FetchAssetsQuery>,
+) -> Response<AssetList> {
     let game_id = path.into_inner();
     let service = global_data.steamgriddb_service();
     let Ok(results) = service.fetch_assets_by_game_id(game_id).await else {
@@ -20,17 +31,16 @@ pub async fn get_assets_by_id(global_data: Data<GlobalState>, path: web::Path<us
         );
     };
 
-    let is_final = results.len() <= query.limit.unwrap_or(15) as usize + query.offset.unwrap_or(0) as usize;
+    let is_final =
+        results.len() <= query.limit.unwrap_or(15) as usize + query.offset.unwrap_or(0) as usize;
 
-    Response::success(
-        AssetList {
-            assets: results
-                .into_iter()
-                .skip(query.offset.unwrap_or(0) as usize)
-                .take(query.limit.unwrap_or(15) as usize)
-                .map(|img| img.into())
-                .collect(),
-            is_final
-        }
-    )
+    Response::success(AssetList {
+        assets: results
+            .into_iter()
+            .skip(query.offset.unwrap_or(0) as usize)
+            .take(query.limit.unwrap_or(15) as usize)
+            .map(|img| img.into())
+            .collect(),
+        is_final,
+    })
 }

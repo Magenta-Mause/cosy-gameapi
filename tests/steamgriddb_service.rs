@@ -10,12 +10,17 @@ async fn logo_empty_data_returns_none() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/logos/game/42").query_param("limit", "1");
+        when.method(GET)
+            .path("/logos/game/42")
+            .query_param("limit", "1");
         then.status(200)
             .body(r#"{"success":true,"page":1,"total":0,"limit":1,"data":[]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -37,7 +42,10 @@ async fn logo_with_data_returns_url() {
         then.status(200).body(r#"{"success":true,"page":1,"total":1,"limit":1,"data":[{"id":1,"url":"https://example.com/logo.png","thumb":"thumb","score":0,"style":"","width":1,"height":1,"nsfw":false,"humor":false,"mime":"image/png","language":"","lock":false,"epilepsy":false,"upvotes":0,"downvotes":0,"author":{"name":"","steam64":"","avatar":""}}]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -53,11 +61,16 @@ async fn logo_non_200_returns_err() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/logos/game/500").query_param("limit", "1");
+        when.method(GET)
+            .path("/logos/game/500")
+            .query_param("limit", "1");
         then.status(500).body("internal error");
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -75,11 +88,17 @@ async fn logo_success_false_returns_err() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/logos/game/400").query_param("limit", "1");
-        then.status(200).body(r#"{"success":false,"page":1,"total":0,"limit":1,"data":[]}"#);
+        when.method(GET)
+            .path("/logos/game/400")
+            .query_param("limit", "1");
+        then.status(200)
+            .body(r#"{"success":false,"page":1,"total":0,"limit":1,"data":[]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -99,11 +118,17 @@ async fn hero_empty_data_returns_none() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/heroes/game/12").query_param("limit", "1");
-        then.status(200).body(r#"{"success":true,"page":1,"total":0,"limit":1,"data":[]}"#);
+        when.method(GET)
+            .path("/heroes/game/12")
+            .query_param("limit", "1");
+        then.status(200)
+            .body(r#"{"success":true,"page":1,"total":0,"limit":1,"data":[]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -123,7 +148,10 @@ async fn hero_with_data_returns_url() {
         then.status(200).body(r#"{"success":true,"page":1,"total":1,"limit":1,"data":[{"id":1,"url":"https://example.com/hero.png","thumb":"thumb","score":0,"style":"","width":1,"height":1,"nsfw":false,"humor":false,"mime":"image/png","language":"","lock":false,"epilepsy":false,"upvotes":0,"downvotes":0,"author":{"name":"","steam64":"","avatar":""}}]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -139,11 +167,16 @@ async fn hero_non_200_returns_err() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/heroes/game/500").query_param("limit", "1");
+        when.method(GET)
+            .path("/heroes/game/500")
+            .query_param("limit", "1");
         then.status(503).body("unavailable");
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),
@@ -161,11 +194,17 @@ async fn hero_success_false_returns_err() {
     let server = MockServer::start();
 
     let _m = server.mock(|when, then| {
-        when.method(GET).path("/heroes/game/400").query_param("limit", "1");
-        then.status(200).body(r#"{"success":false,"page":1,"total":0,"limit":1,"data":[]}"#);
+        when.method(GET)
+            .path("/heroes/game/400")
+            .query_param("limit", "1");
+        then.status(200)
+            .body(r#"{"success":false,"page":1,"total":0,"limit":1,"data":[]}"#);
     });
 
-    let client = Client::builder().timeout(Duration::from_secs(5)).build().unwrap();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(5))
+        .build()
+        .unwrap();
     let service = SteamgriddbService::new(
         Arc::new(steamgriddb_api::Client::new("dummy")),
         Arc::new(client),

@@ -2,14 +2,13 @@
 
 use serde::Deserialize;
 
-
 #[derive(Deserialize)]
 pub struct HeroesResponse {
     pub success: bool,
     page: u32,
     total: u32,
     limit: u32,
-    pub data: Vec<HeroResponseData>
+    pub data: Vec<HeroResponseData>,
 }
 
 #[derive(Deserialize)]
@@ -40,7 +39,7 @@ pub struct LogosResponse {
     page: u32,
     total: u32,
     limit: u32,
-    pub data: Vec<LogoResposeData>
+    pub data: Vec<LogoResposeData>,
 }
 
 #[derive(Deserialize)]
@@ -69,5 +68,5 @@ pub struct LogoResposeData {
 struct ResponseAuthor {
     name: String,
     steam64: String,
-    avatar: String
+    avatar: String,
 }
