@@ -12,7 +12,8 @@ pub struct FetchAssetsQuery {
 #[get("/assets/{game_id}")]
 pub async fn get_assets_by_id(global_data: Data<GlobalState>, path: web::Path<usize>, query: Query<FetchAssetsQuery>) -> Response<AssetList> {
     let game_id = path.into_inner();
-    let Ok(results) = global_data.fetch_assets_by_game_id(game_id).await else {
+    let service = global_data.steamgriddb_service();
+    let Ok(results) = service.fetch_assets_by_game_id(game_id).await else {
         return Response::error(
             "Failed to fetch assets".into(),
             StatusCode::INTERNAL_SERVER_ERROR,
