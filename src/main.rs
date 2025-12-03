@@ -1,5 +1,8 @@
-use cosy_gameapi::{GlobalState, routes::{get_assets_by_id, search_games}};
 use actix_web::{web, App, HttpServer};
+use cosy_gameapi::{
+    routes::{get_assets_by_id, search_games},
+    GlobalState,
+};
 
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -15,7 +15,7 @@ pub struct Game {
 impl From<steamgriddb_api::search::SearchResult> for Game {
     fn from(result: steamgriddb_api::search::SearchResult) -> Self {
         Game {
-            id: result.id as usize,
+            id: result.id,
             name: result.name,
             logo_url: None,
             hero_url: None,
@@ -26,6 +26,5 @@ impl From<steamgriddb_api::search::SearchResult> for Game {
 #[derive(Serialize, Clone)]
 pub struct GameList {
     pub games: Vec<Game>,
-    pub is_final: bool
+    pub is_final: bool,
 }
-

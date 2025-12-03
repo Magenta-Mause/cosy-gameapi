@@ -26,7 +26,7 @@ impl<T: Serialize> Response<T> {
             data: Some(data),
             message: None,
             code: None,
-            timestamp: 0
+            timestamp: 0,
         }
     }
 
@@ -36,7 +36,7 @@ impl<T: Serialize> Response<T> {
             data: None,
             message: Some(message),
             code: Some(code),
-            timestamp: 0
+            timestamp: 0,
         }
     }
 }
