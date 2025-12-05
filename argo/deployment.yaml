@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cosy-gameapi
+  namespace: cosy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosy-gameapi
+  template:
+    metadata:
+      labels:
+        app: cosy-gameapi
+    spec:
+      containers:
+        - name: cosy-gameapi
+          image: ghcr.io/magenta-mause/cosy-gameapi:v0.0.4
+          ports:
+            - containerPort: 8080
+          env:
+            - name: COSY_GAMEAPI_SGDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cosy-gameapi-secret
+                  key: steamgriddb_api_secret
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          readinessProbe:
+            httpGet:
+              path: /games?query=anything
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 3
+
